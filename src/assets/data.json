@@ -1,0 +1,27 @@
+[
+    {
+      "songName": "Namastute",
+      "artist": "Seedhe Maut",
+      "songImage": "namastute.png",
+      "timestamp": "2:00"
+    },
+    {
+      "songName": "Not Like Us",
+      "artist": "Kendrick Lamar",
+      "songImage": "notlikeus.png",
+      "timestamp": "4:34"
+    },
+    {
+      "songName": "FELONY (feat. Talhah Yunus, Calm & Faris Shafi)",
+      "artist": "Umair, Talhah Yunus, Calm, Faris Shafit",
+      "songImage": "felony.png",
+      "timestamp": "3:54"
+    },
+    {
+      "songName": "Somebody To Love",
+      "artist": "Queen",
+      "songImage": "somebody.png",
+      "timestamp": "4:56"
+    }
+  ]
+  
