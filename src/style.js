@@ -18,8 +18,8 @@ const styles = {
     bord: `mx-4 ${styles.flexCenter} ${styles.borderS} p-1 text-sm`,
     sideB: `${styles.side} flex flex-col justify-between items-center`,
     navbar: `${styles.flexBetween} px-5 md:px-10 fixed top-0 bg-gradient-to-b from-white/20 to-transparent w-full h-20`,
-    slider: `relative flex w-full h-screen transition-all duration-300 overflow-hidden`,
-    slide: `${styles.flexCenter} absolute w-screen h-full flex-col transition-all duration-300 px-5 gap-3`,
+    slider: `relative flex w-full h-screen overflow-hidden`,
+    slide: `${styles.flexCenter} absolute size-full sm:size-1/4 flex-col px-10 gap-3`,
   };
   
   export default styles;

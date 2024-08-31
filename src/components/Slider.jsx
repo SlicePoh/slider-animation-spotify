@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import s, { layout } from '../style';
 import { IoPause, IoPlay } from 'react-icons/io5';
 import { TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from 'react-icons/tb';
@@ -15,46 +15,68 @@ export const Slider = () => {
   const container = useRef(null);
   const slides = useRef([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  
-  const contextSafe = useGSAP(()=>{
+
+  const {contextSafe} = useGSAP(() => {
     gsap.registerPlugin(Draggable);
-  },{scope: slides});
-  useEffect(() => {
-    if (slides.current.length > 0) {
-      gsap.to(slides.current, {
-        xPercent: -100 * currentIndex,
-        duration: 0.5,
-        ease: 'power2.inOut',
-      });
+    gsap.set(slides.current, { display: 'none' });
+    gsap.set(slides.current[currentIndex], { display: 'flex' });
+  }, { scope: container});
 
-      Draggable.create(container.current, {
-        type: 'x',
-        bounds: { minX: -window.innerWidth * (songData.length - 1), maxX: 0 },
-        inertia: true,
-        onDragEnd: function () {
-          const newIndex = Math.round(-this.x / window.innerWidth);
-          setCurrentIndex(newIndex);
-          gsap.to(slides.current, { xPercent: -100 * newIndex, duration: 0.5 });
-        },
-      });
-    }
-  }, [currentIndex]);
-
-  const handleNext = () => {
+  const handleNext = contextSafe(() => {
     if (currentIndex < songData.length - 1) {
+      let tl = gsap.timeline();
       const newIndex = currentIndex + 1;
       setCurrentIndex(newIndex);
-      gsap.to(slides.current, { xPercent: -100 * newIndex, duration: 0.5 });
+      tl.to(slides.current[currentIndex], {
+        x: -300,
+        duration: 0.3,
+        ease: 'power.inOut',
+        display: 'none',
+      })
+      // .set(slides.current[currentIndex], { display: 'none', ease: 'power.inOut', duration: 0.01, })
+      // .set(slides.current[newIndex], { display: 'flex', ease: 'power.inOut', duration: 0.01, })
+      .from(slides.current[newIndex], {
+        x: 300,
+        duration: 0.3,
+        ease: 'power.inOut',
+      })
+      .to(slides.current[newIndex],{
+        display: 'flex',
+        x: 0,
+        duration: 0.3,
+        ease: 'power.inOut',
+      })
     }
-  };
+  });
 
-  const handlePrev = () => {
+  const handlePrev = contextSafe(() => {
     if (currentIndex > 0) {
+      let tl = gsap.timeline();
       const newIndex = currentIndex - 1;
       setCurrentIndex(newIndex);
-      gsap.to(slides.current, { xPercent: -100 * newIndex, duration: 0.5 });
+      tl.to(slides.current[currentIndex], {
+        x: 300,
+        duration: 0.3,
+        ease: 'power.inOut',
+        display: 'none',
+      })
+      // .set(slides.current[currentIndex], { display: 'none', ease: 'power.inOut', duration: 0.01, })
+      // .set(slides.current[newIndex], { display: 'flex', ease: 'power.inOut', duration: 0.01, })
+      .from(slides.current[newIndex], {
+        x: -300,
+        duration: 0.3,
+        ease: 'power.inOut',
+      })
+      .to(slides.current[newIndex],{
+        display: 'flex',
+        x: 0,
+        duration: 0.3,
+        ease: 'power.inOut',
+      })
     }
-  };
+  });
+  
+
 
   const togglePlay = (index) => {
     setIsPlay((prev) => prev.map((play, i) => (i === index ? !play : play)));
@@ -70,13 +92,13 @@ export const Slider = () => {
         <div
           ref={(el) => (slides.current[i] = el)}
           key={i}
-          className={`${layout.slide} ${i === currentIndex ? 'block' : 'hidden'}`}
-          style={{ transform: `translateX(${i === currentIndex ? '0%' : '100%'})` }}
+          className={`${layout.slide} `}
+          // style={{ transform: `translateX(${i === currentIndex ? '0%' : '100%'})` }}
         >
-          <img className="w-full rounded-lg" src={require(`../assets/images/${song.songImage}`)} alt={song.songName} />
-          <div className={`${s.flexBetween} w-5/6`}>
+          <img className="w-full rounded-2xl" src={require(`../assets/images/${song.songImage}`)} alt={song.songName} />
+          <div className={`${s.flexBetween} w-full `}>
             <div className="">
-              <div className="text-2xl">{song.songName}</div>
+              <div className="text-3xl">{song.songName}</div>
               <div className="text-2xs font-normal">{song.artist}</div>
             </div>
             <div className="bg-white rounded-full p-1">
@@ -87,7 +109,7 @@ export const Slider = () => {
               )}
             </div>
           </div>
-          <div className={`${s.flexCenter} gap-5 text-2xl`}>
+          <div className={`${s.flexCenter} gap-5 text-2xl w-full`}>
             <TbPlayerTrackPrevFilled onClick={handlePrev} />
             {isPlay[i] ? (
               <button onClick={() => togglePlay(i)} className={`${s.flexCenter} rounded-full bg-white p-1`}>
@@ -105,3 +127,49 @@ export const Slider = () => {
     </div>
   );
 };
+
+
+// useEffect(() => {
+//   if (slides.current.length > 0) {
+//     gsap.to(slides.current, {
+//       xPercent: -50 * currentIndex,
+//       duration: 0.5,
+//       ease: 'power2.inOut',
+//     });
+
+//     Draggable.create(slides.current, {
+//       type: 'x',
+//       bounds: { minX: -window.innerWidth * (songData.length - 1), maxX: 0 },
+//       inertia: true,
+//       onDragEnd: function () {
+//         const newIndex = Math.round(-this.x / window.innerWidth);
+//         setCurrentIndex(newIndex);
+//         gsap.to(slides.current, { xPercent: -100 * newIndex, duration: 0.5 });
+//       },
+//     });
+//   }
+// }, [currentIndex]);
+
+// const handleNext = contextSafe(() => {
+//   if (currentIndex < songData.length - 1) {
+//     const newIndex = currentIndex + 1;
+//     setCurrentIndex(newIndex);
+//     gsap.to(slides.current, {
+//       xPercent: -50 * newIndex,
+//       duration: 0.5,
+//       ease: 'bounce.in'
+//     });
+//   }
+// })
+
+// const handlePrev = contextSafe(() => {
+//   if (currentIndex > 0) {
+//     const newIndex = currentIndex - 1;
+//     setCurrentIndex(newIndex);
+//     gsap.to(slides.current, {
+//       xPercent: -50 * newIndex,
+//       duration: 0.5,
+//       ease: 'bounce.in'
+//     });
+//   }
+// })
